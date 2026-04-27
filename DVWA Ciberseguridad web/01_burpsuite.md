@@ -199,13 +199,13 @@ Ejemplo con el usuario `admin` y una wordlist de 3 contraseñas:
 
 Introduce **la misma palabra en todas las posiciones marcadas** simultáneamente. No es especialmente útil para formularios de autenticación, pero sí para casos en los que se quiere probar el mismo valor en varios parámetros a la vez.
 
-Ejemplo con una wordlist de 3 palabras (`admin`, `manuel`, `monica`):
+Ejemplo con una wordlist de 3 palabras (`admin`, `martin`, `paula`):
 
 | Nº petición | Prueba |
 |---|---|
 | 1 | `username=admin&password=admin` |
-| 2 | `username=manuel&password=manuel` |
-| 3 | `username=monica&password=monica` |
+| 2 | `username=martin&password=martin` |
+| 3 | `username=paula&password=paula` |
 
 ### Pitchfork
 
@@ -213,13 +213,13 @@ Permite atacar **varias posiciones con wordlists distintas** de forma paralela, 
 
 > **Recuerda:** Las wordlists deben tener el mismo número de entradas para que las combinaciones sean coherentes.
 
-Ejemplo con wordlist de usuarios (`admin`, `manuel`, `monica`) y wordlist de contraseñas (`abc123`, `password`, `toor`):
+Ejemplo con wordlist de usuarios (`admin`, `martin`, `paula`) y wordlist de contraseñas (`abc123`, `password`, `toor`):
 
 | Nº petición | Prueba |
 |---|---|
 | 1 | `username=admin&password=abc123` |
-| 2 | `username=manuel&password=password` |
-| 3 | `username=monica&password=toor` |
+| 2 | `username=martin&password=password` |
+| 3 | `username=paula&password=toor` |
 
 ### Cluster Bomb
 
@@ -232,11 +232,11 @@ Con los mismos diccionarios del ejemplo anterior (3 usuarios × 3 contraseñas =
 | 1 | `username=admin&password=abc123` |
 | 2 | `username=admin&password=password` |
 | 3 | `username=admin&password=toor` |
-| 4 | `username=manuel&password=abc123` |
-| 5 | `username=manuel&password=password` |
-| 6 | `username=manuel&password=toor` |
-| 7 | `username=monica&password=abc123` |
-| 8 | `username=monica&password=password` |
-| 9 | `username=monica&password=toor` |
+| 4 | `username=martin&password=abc123` |
+| 5 | `username=martin&password=password` |
+| 6 | `username=martin&password=toor` |
+| 7 | `username=paula&password=abc123` |
+| 8 | `username=paula&password=password` |
+| 9 | `username=paula&password=toor` |
 
 > **Nota:** El número total de peticiones en Cluster Bomb es el producto del número de entradas de cada wordlist. Con listas grandes esto puede generar millones de peticiones, por lo que conviene usarlo con criterio.
