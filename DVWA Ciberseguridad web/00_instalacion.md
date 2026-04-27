@@ -241,4 +241,4 @@ En caso de encontrar advertencias en rojo, habrá que revisar las configuracione
 
 Con todo comprobado, se pulsa el botón de **Create / Reset Database**. En este punto, volviendo a acceder con las credenciales `admin` / `password`, ya tendremos la aplicación DVWA completamente operativa.
 
-![DVWA Web](./imagenes/configuracion/1.png)
+![DVWA Web](./imagenes/configuracion/01.png)
