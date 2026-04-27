@@ -30,6 +30,9 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 
 - [00 - Repositorio oficial de DVWA](https://github.com/digininja/DVWA)
 - [00 - Instalación de DVWA](./DVWA%20Ciberseguridad%20web/00_instalacion.md)
+- [01 - Uso de Burp Suite](./DVWA%20Ciberseguridad%20web/01_burpsuite.md)
+- [02 - Fuerza Bruta](./DVWA%20Ciberseguridad%20web/02_fuerza_bruta.md)
+
 
 ### Máquinas comprometidas
 
