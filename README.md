@@ -33,7 +33,7 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 - [01 - Uso de Burp Suite](./DVWA%20Ciberseguridad%20web/01_burpsuite.md)
 - [02 - Fuerza Bruta](./DVWA%20Ciberseguridad%20web/02_brute_force.md)
 - [03 - Inyección de comandos](./DVWA%20Ciberseguridad%20web/03_command_injection.md)
-
+- [04 - File Inclusion](./DVWA%20Ciberseguridad%20web/04_file_inclusion.md)
 
 ### Máquinas comprometidas
 
