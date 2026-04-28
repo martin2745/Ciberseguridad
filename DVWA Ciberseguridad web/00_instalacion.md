@@ -43,7 +43,7 @@ root@ubuntuserver:~#  sudo apt install apache2 php libapache2-mod-php php-gd php
 
 Finalizado el proceso, ejecutamos el comando `ss` mostrando que el servidor Apache y MariaDB están en escucha en los puertos por defecto `tcp/80` y `tcp/3306` respectivamente. El comando `ss` permite visualizar los sockets en escucha del sistema, lo que nos confirmará que los servicios se han levantado correctamente.
 
-La configuración por defecto del servidor Apache en Ubuntu establece el directorio de publicación en la ruta `/var/www/html`, por lo que se copiarán los archivos de la aplicación DVWA en esta ruta. Descargamos de Github la información necesaria y modificamos el nombre del directorio de `DVWA` a `dvwa` para facilitar su uso.
+La configuración por defecto del servidor Apache en Ubuntu establece el directorio de publicación en la ruta `/var/www/html`, por lo que se copiarán los archivos de la aplicación DVWA en esta ruta. Descargamos de [repositorio oficial de DVWA](https://github.com/digininja/DVWA) la información necesaria y modificamos el nombre del directorio de `DVWA` a `dvwa` para facilitar su uso.
 
 ```bash
 root@ubuntuserver:~# cd /var/www/html/
