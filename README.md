@@ -33,6 +33,7 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 - [02 - Fuerza Bruta](./DVWA%20Ciberseguridad%20web/02_brute_force.md)
 - [03 - Inyección de comandos](./DVWA%20Ciberseguridad%20web/03_command_injection.md)
 - [04 - File Inclusion](./DVWA%20Ciberseguridad%20web/04_file_inclusion.md)
+- [05 - File Upload](./DVWA%20Ciberseguridad%20web/05_file_upload_vulnerability.md)
 
 ### Máquinas comprometidas
 
