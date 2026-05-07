@@ -141,7 +141,7 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin
 ...
 www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 ...
-regal:x:1000:1000:admin:/home/regal:/bin/bash
+usuario:x:1000:1000:admin:/home/usuario:/bin/bash
 mysql:x:114:119:MySQL Server,,,:/nonexistent:/bin/false
 ```
 
