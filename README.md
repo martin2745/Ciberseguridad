@@ -35,6 +35,9 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 - [04 - File Inclusion](./DVWA%20Ciberseguridad%20web/04_file_inclusion.md)
 - [05 - File Upload](./DVWA%20Ciberseguridad%20web/05_file_upload_vulnerability.md)
 - [06 - SQL Injection](./DVWA%20Ciberseguridad%20web/06_sql_injection.md)
+- [07 - Blind SQL injection](./DVWA%20Ciberseguridad%20web/07_blind_sqli.md)
+- [08 - XSS reflected](./DVWA%20Ciberseguridad%20web/08_reflected_xss.md)
+- [09 - XSS stored](./DVWA%20Ciberseguridad%20web/09_stored_xss.md)
 
 ### Máquinas comprometidas
 
