@@ -137,6 +137,7 @@ mindmap
    - [Captura de tráfico con tcpdump y Wireshark](#captura-de-tráfico-con-tcpdump-y-wireshark)
    - [Uso de scripts NSE](#uso-de-scripts-nse)
    - [Opciones adicionales útiles](#opciones-adicionales-útiles)
+6. [Cuestionario](#cuestionario)
 
 ---
 
@@ -1626,3 +1627,294 @@ Algunas opciones de uso frecuente que se pueden combinar con los escaneos anteri
 | `-A` | Escaneo agresivo: combina detección de SO (`-O`), versión de servicios (`-sV`), scripts por defecto (`-sC`) y `traceroute`. |
 | `-n` | No realiza resolución DNS inversa, acelerando el escaneo. |
 | `-T4` | Plantilla de temporizado agresiva: más rápida y ruidosa (ver [Plantillas de temporizado](#plantillas-de-temporizado)). |
+
+---
+
+## Cuestionario
+
+Batería de repaso de los conceptos vistos en este documento. Para cada pregunta se muestran las **opciones disponibles**, la **respuesta correcta** y una breve explicación del porqué.
+
+**Pregunta 1.** ¿Cuál es el modo de escaneo más rápido en Nmap?
+
+Opciones:
+
+- Escaneo de puertos TCP SYN
+- Escaneo de puertos TCP Connect
+- Escaneo de puertos UDP
+- Escaneo de puertos TCP NULL
+
+**Respuesta:** Escaneo de puertos TCP SYN (`-sS`).
+
+**Por qué:** el escaneo SYN no completa el *handshake* (envía SYN y aborta con RST), por lo que es más rápido y ligero que el Connect (`-sT`), que sí abre la conexión completa. El escaneo UDP es notablemente más lento.
+
+**Pregunta 2.** ¿En qué lenguaje se pueden escribir scripts personalizados para nmap?
+
+Opciones:
+
+- Perl
+- Python
+- Lua
+- Ruby
+
+**Respuesta:** Lua.
+
+**Por qué:** el motor NSE (*Nmap Scripting Engine*) ejecuta scripts escritos en Lua, lo que permite crear comprobaciones propias.
+
+**Pregunta 3.** ¿Qué técnica alternativa se puede utilizar para enumerar puertos en lugar del escaneo de puertos TCP/UDP?
+
+Opciones:
+
+- Escaneo de puertos NULL
+- Escaneo de puertos XMAS
+- Enumeración de puertos usando descriptores de archivo
+- Escaneo de puertos ACK
+
+**Respuesta:** Enumeración de puertos usando descriptores de archivo.
+
+**Por qué:** las otras opciones (NULL, XMAS, ACK) siguen siendo variantes de escaneo TCP. La verdadera alternativa sin usar el escáner es apoyarse en descriptores de archivo del sistema (por ejemplo `/dev/tcp` en Bash) para comprobar si un puerto responde.
+
+**Pregunta 4.** ¿Qué parámetro se utiliza en Nmap para escanear puertos UDP?
+
+Opciones:
+
+- `-sT`
+- `-sU`
+- `-sP`
+- `-sS`
+
+**Respuesta:** `-sU`.
+
+**Por qué:** `-sU` lanza el escaneo UDP; `-sT` es Connect, `-sS` es SYN y `-sP` (antiguo) era un simple *ping*.
+
+**Pregunta 5.** ¿Cuál es la técnica de escaneo de Nmap que utiliza paquetes ICMP Echo Request en lugar de TCP o UDP?
+
+Opciones:
+
+- TCP SYN scan
+- UDP scan
+- ICMP scan
+- Null scan
+
+**Respuesta:** ICMP scan.
+
+**Por qué:** emplea mensajes ICMP Echo Request (el mismo mecanismo que `ping`) para determinar si un host está activo, sin recurrir a TCP ni UDP.
+
+**Pregunta 6.** ¿Qué parámetro se utiliza en Nmap para ocultar/falsificar la dirección IP de origen de los paquetes enviados durante el escaneo?
+
+Opciones:
+
+- `-S`
+- `-Pn`
+- `-D`
+- `-F`
+
+**Respuesta:** `-S`.
+
+**Por qué:** `-S <IP>` suplanta la dirección de origen (*spoofing*). `-D` usa señuelos, `-Pn` omite el descubrimiento de host y `-F` hace un escaneo rápido.
+
+**Pregunta 7.** ¿Qué técnica de escaneo de Nmap se utiliza para omitir el escaneo de puertos cerrados y enfocarse solo en los puertos abiertos?
+
+Opciones:
+
+- TCP Connect scan
+- FIN scan
+- SYN scan
+- ACK scan
+
+**Respuesta:** SYN scan (`-sS`).
+
+**Por qué:** el escaneo SYN (sigiloso) es el método eficiente por defecto para identificar puertos abiertos sin completar conexiones, descartando rápidamente los cerrados.
+
+**Pregunta 8.** ¿Qué parámetro de Nmap se utiliza para especificar un rango de puertos a escanear?
+
+Opciones:
+
+- `-p`
+- `-sS`
+- `-n`
+- `-O`
+
+**Respuesta:** `-p`.
+
+**Por qué:** con `-p` se indican los puertos o rangos (`-p 20-200`, `-p 80,443`, `-p-`…).
+
+**Pregunta 9.** ¿Qué parámetro de Nmap sirve para controlar el temporizado y el rendimiento del escaneo?
+
+Opciones:
+
+- `-T`
+- `-F`
+- `-oG`
+- `-w`
+
+**Respuesta:** `-T`.
+
+**Por qué:** las plantillas `-T0` (paranoid) a `-T5` (insane) ajustan la velocidad y agresividad del escaneo.
+
+**Pregunta 10.** ¿Qué técnica de escaneo de Nmap se utiliza para detectar sistemas operativos en una red?
+
+Opciones:
+
+- OS Fingerprinting
+- Stealth scan
+- Decoy scan
+- XMAS scan
+
+**Respuesta:** OS Fingerprinting (`-O`).
+
+**Por qué:** analiza las peculiaridades de la pila TCP/IP del objetivo para deducir su sistema operativo.
+
+**Pregunta 11.** ¿Qué parámetro de Nmap se utiliza para realizar un escaneo rápido sin realizar una resolución DNS inversa?
+
+Opciones:
+
+- `-Pn`
+- `-n`
+- `-sN`
+- `-sF`
+
+**Respuesta:** `-n`.
+
+**Por qué:** `-n` desactiva la resolución DNS inversa y acelera el escaneo. No confundir con `-Pn`, que omite el descubrimiento de host.
+
+**Pregunta 12.** ¿Qué técnica de escaneo de Nmap envía paquetes TCP con las banderas URG y PUSH (y FIN) activadas para detectar puertos protegidos por firewalls que bloquean paquetes SYN?
+
+Opciones:
+
+- XMAS scan
+- Null scan
+- TCP Connect scan
+- FIN scan
+
+**Respuesta:** XMAS scan (`-sX`).
+
+**Por qué:** el escaneo Xmas enciende las banderas FIN, PSH y URG (como las luces de un árbol de Navidad), lo que ayuda a evadir filtros que solo bloquean SYN.
+
+**Pregunta 13.** ¿Qué parámetro de wfuzz se utiliza para especificar una lista de palabras para realizar un ataque de fuerza bruta?
+
+Opciones:
+
+- `-c`
+- `-z`
+- `-w`
+- `-t`
+
+**Respuesta:** `-w`.
+
+**Por qué:** `-w` carga el diccionario (*wordlist*). `-z` define el tipo de *payload*, `-c` colorea y `-t` fija los hilos.
+
+**Pregunta 14.** ¿Qué parámetro de wfuzz se utiliza para realizar una petición con un método HTTP personalizado, como PUT o DELETE?
+
+Opciones:
+
+- `-X`
+- `-H`
+- `-p`
+- `-d`
+
+**Respuesta:** `-X`.
+
+**Por qué:** `-X <método>` cambia el método HTTP de la petición (GET por defecto).
+
+**Pregunta 15.** ¿Qué parámetro de wfuzz se utiliza para mostrar (considerar válidas) las respuestas con un código de estado HTTP concreto?
+
+Opciones:
+
+- `--sw`
+- `--hl`
+- `--sc`
+- `--wp`
+
+**Respuesta:** `--sc`.
+
+**Por qué:** `--sc` (*show code*) muestra únicamente las respuestas con el código indicado.
+
+**Pregunta 16.** ¿Qué parámetro de gobuster se utiliza para especificar la URL o el dominio objetivo?
+
+Opciones:
+
+- `-u`
+- `-w`
+- `-t`
+- `-o`
+
+**Respuesta:** `-u`.
+
+**Por qué:** `-u` indica la URL/objetivo; `-w` el diccionario, `-t` los hilos y `-o` el archivo de salida.
+
+**Pregunta 17.** Relaciona cada parámetro de wfuzz con su definición. Parámetros a relacionar: `--hc`, `--sl`, `--sh`, `--hh`, `--sc`, `--hw`.
+
+| Parámetro | Definición |
+|-----------|------------|
+| `--hc` | Ocultar respuestas por código de estado HTTP. |
+| `--sl` | Mostrar respuestas por número de líneas. |
+| `--sh` | Mostrar respuestas por número de caracteres (*chars*). |
+| `--hh` | Ocultar respuestas por número de caracteres (*chars*). |
+| `--sc` | Mostrar respuestas por código de estado HTTP. |
+| `--hw` | Ocultar respuestas por número de palabras. |
+
+**Por qué:** en wfuzz el prefijo `h` = *hide* (ocultar) y `s` = *show* (mostrar); la última letra indica el criterio: `c` = código, `l` = líneas, `w` = palabras, `h` = caracteres (*chars*).
+
+**Pregunta 18.** Con wfuzz, para ocultar las respuestas que tengan un número de caracteres dado, ¿qué parámetro se usa? *(Pregunta de rellenar, con guiones incluidos.)*
+
+**Respuesta:** `--hh`.
+
+**Por qué:** `--hh` (*hide chars*) oculta las respuestas con ese número de caracteres.
+
+**Pregunta 19.** Con wfuzz, para mostrar las respuestas que tengan un número de palabras dado, ¿qué parámetro se usa? *(Pregunta de rellenar, con guiones incluidos.)*
+
+**Respuesta:** `--sw`.
+
+**Por qué:** `--sw` (*show words*) muestra solo las respuestas con ese número de palabras.
+
+**Pregunta 20.** ¿Qué comando de gobuster permite realizar un reconocimiento de subdominios?
+
+Opciones:
+
+- `dir`
+- `dns`
+- `fuzz`
+- `vhost`
+
+**Respuesta:** `dns`.
+
+**Por qué:** el modo `dns` prueba nombres por fuerza bruta para descubrir subdominios; `vhost` busca hosts virtuales, `dir` directorios y `fuzz` puntos de inyección arbitrarios.
+
+**Pregunta 21.** ¿Qué cabecera se usa con wfuzz para enumerar subdominios por fuerza bruta sobre un dominio dado?
+
+Opciones:
+
+- `Same-Origin`
+- `Origin`
+- `Host`
+- `Referer`
+- `Domain`
+
+**Respuesta:** `Host`.
+
+**Por qué:** variando la cabecera `Host` (`-H "Host: FUZZ.dominio.com"`) se prueban distintos subdominios/*virtual hosts* contra el mismo servidor.
+
+**Pregunta 22.** ¿Qué formas válidas existen con nmap de indicar que queremos escanear todo el rango total de puertos? *(Selección múltiple.)*
+
+Opciones:
+
+- `-p`
+- `-p-`
+- `-p-65535`
+- `-p1-65535`
+
+**Respuesta:** `-p-`, `-p-65535` y `-p1-65535`.
+
+**Por qué:** las tres cubren del puerto 1 al 65535 (en `-p-65535` se omite el inicio, que por defecto es 1). `-p` a secas no es válido porque requiere un valor.
+
+**Pregunta 23.** Ante una máquina Linux, ¿qué valor de TTL es probable ver en la fase de reconocimiento? *(Pregunta de rellenar.)*
+
+**Respuesta:** `64`.
+
+**Por qué:** el TTL por defecto de los sistemas Linux/Unix es 64 (el valor observado puede ser algo menor por los saltos intermedios).
+
+**Pregunta 24.** Ante una máquina Windows, ¿qué valor de TTL es probable ver en la fase de reconocimiento? *(Pregunta de rellenar.)*
+
+**Respuesta:** `128`.
+
+**Por qué:** el TTL por defecto de los sistemas Windows es 128.

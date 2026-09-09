@@ -116,6 +116,7 @@ mindmap
    - [Ejemplo: 192.168.1.0/26](#ejemplo-19216810-26)
    - [Caso particular: 13.13.13.13/13](#caso-particular-131313-1313)
 10. [Referencias](#10-referencias)
+11. [Cuestionario](#11-cuestionario)
 
 ---
 
@@ -463,3 +464,302 @@ Recursos en línea útiles para practicar el cálculo de subredes y la conversi�
 
 - Conversor de CIDR a IPv4: <https://www.ipaddressguide.com/cidr>
 - IP Calculator (jodies.de): <https://blog.jodies.de/ipcalc>
+
+---
+
+## 11. Cuestionario
+
+Batería de repaso de los conceptos vistos en este documento. Para cada pregunta se muestran las **opciones disponibles**, la **respuesta correcta** y una breve explicación del porqué.
+
+**Pregunta 1.** ¿Cuántos bits se usan para la dirección de red en una dirección IP de Clase C?
+
+Opciones:
+
+- 8 bits
+- 16 bits
+- 24 bits
+
+**Respuesta:** 24 bits.
+
+**Por qué:** la Clase C tiene máscara por defecto `/24` (`255.255.255.0`), es decir, los tres primeros octetos (24 bits) identifican la red.
+
+**Pregunta 2.** ¿Cuál es la máscara de red correcta para una dirección IP de Clase B?
+
+Opciones:
+
+- `255.0.0.0`
+- `255.255.0.0`
+- `255.255.255.0`
+
+**Respuesta:** `255.255.0.0`.
+
+**Por qué:** la Clase B usa `/16`: los dos primeros octetos son de red y los dos últimos, de host.
+
+**Pregunta 3.** ¿Cuántos hosts se pueden tener en una subred con máscara `255.255.255.192` (CIDR `/26`)?
+
+Opciones:
+
+- 30 hosts
+- 62 hosts
+- 126 hosts
+
+**Respuesta:** 62 hosts.
+
+**Por qué:** `/26` deja 6 bits de host → 2⁶ − 2 = 62 (se restan el Network ID y la Broadcast).
+
+**Pregunta 4.** ¿Cuántos bits se usan para la dirección de host en una dirección IP de Clase A?
+
+Opciones:
+
+- 8 bits
+- 16 bits
+- 24 bits
+
+**Respuesta:** 24 bits.
+
+**Por qué:** la Clase A es `/8`: 8 bits de red y los 24 restantes de host.
+
+**Pregunta 5.** ¿Cuál es la máscara de red correcta para una dirección IP de Clase C?
+
+Opciones:
+
+- `255.0.0.0`
+- `255.255.0.0`
+- `255.255.255.0`
+
+**Respuesta:** `255.255.255.0`.
+
+**Por qué:** la Clase C usa `/24` (tres octetos de red).
+
+**Pregunta 6.** ¿Cuántos bits se usan para la dirección de red en una dirección IP de Clase B?
+
+Opciones:
+
+- 8 bits
+- 16 bits
+- 24 bits
+
+**Respuesta:** 16 bits.
+
+**Por qué:** la Clase B es `/16`: los dos primeros octetos (16 bits) son de red.
+
+**Pregunta 7.** ¿Cuántos hosts se pueden tener en una subred con máscara `255.255.255.0` (CIDR `/24`)?
+
+Opciones:
+
+- 254 hosts
+- 256 hosts
+- 512 hosts
+
+**Respuesta:** 254 hosts.
+
+**Por qué:** `/24` deja 8 bits de host → 2⁸ − 2 = 254 direcciones utilizables.
+
+**Pregunta 8.** ¿Cuántos bits se usan para la dirección de host en una dirección IP de Clase C?
+
+Opciones:
+
+- 8 bits
+- 16 bits
+- 24 bits
+
+**Respuesta:** 8 bits.
+
+**Por qué:** en la Clase C (`/24`) el último octeto (8 bits) se reserva para los hosts.
+
+**Pregunta 9.** ¿Cuál es la máscara de red correcta para una dirección IP de Clase A?
+
+Opciones:
+
+- `255.0.0.0`
+- `255.255.0.0`
+- `255.255.255.0`
+
+**Respuesta:** `255.0.0.0`.
+
+**Por qué:** la Clase A usa `/8` (un solo octeto de red).
+
+**Pregunta 10.** ¿Los primeros 6 bytes de una dirección MAC corresponden al OUI?
+
+Opciones:
+
+- Verdadero
+- Falso
+
+**Respuesta:** Falso.
+
+**Por qué:** el OUI son los primeros **3 bytes** (24 bits), equivalentes a los primeros 6 dígitos hexadecimales; los otros 3 bytes son el NIC. La confusión surge entre "6 dígitos hex" (correcto) y "6 bytes" (incorrecto).
+
+**Pregunta 11.** ¿En qué capa del modelo OSI se lleva a cabo el enrutamiento de paquetes?
+
+Opciones:
+
+- Capa de Transporte
+- Capa de Red
+- Capa de Enlace de Datos
+
+**Respuesta:** Capa de Red.
+
+**Por qué:** la capa 3 (Red) usa direcciones lógicas (IP) para encaminar los paquetes entre redes; es donde operan los routers.
+
+**Pregunta 12.** ¿Qué protocolos se utilizan en la capa de Transporte del modelo OSI?
+
+Opciones:
+
+- TCP y UDP
+- FTP y SSH
+- HTTP y DNS
+
+**Respuesta:** TCP y UDP.
+
+**Por qué:** son los protocolos de transporte (capa 4). FTP, SSH, HTTP y DNS son de aplicación.
+
+**Pregunta 13.** ¿Cuál es la función principal de la capa de Red del modelo OSI?
+
+Opciones:
+
+- Controlar el flujo de datos
+- Establecer y mantener una conexión entre los dispositivos
+- Encaminar los paquetes a través de la red
+
+**Respuesta:** Encaminar los paquetes a través de la red.
+
+**Por qué:** la capa de Red se encarga del enrutamiento entre redes mediante direcciones lógicas.
+
+**Pregunta 14.** ¿Qué tipo de dispositivos operan en la capa de Enlace de Datos del modelo OSI?
+
+Opciones:
+
+- Routers
+- Switches
+- Servidores
+
+**Respuesta:** Switches.
+
+**Por qué:** los switches conmutan tramas usando direcciones MAC (capa 2). Los routers operan en capa 3 y los servidores en capa 7.
+
+**Pregunta 15.** ¿Cuál es la función principal de la capa de Aplicación del modelo OSI?
+
+Opciones:
+
+- Proporcionar servicios de red a las aplicaciones
+- Convertir los datos en paquetes que puedan ser transmitidos por la red
+- Controlar el acceso a la red y la transmisión de datos
+
+**Respuesta:** Proporcionar servicios de red a las aplicaciones.
+
+**Por qué:** la capa 7 es la interfaz entre las aplicaciones del usuario final (navegador, correo…) y la red.
+
+**Pregunta 16.** ¿Cuántos bytes tiene una dirección MAC?
+
+Opciones:
+
+- 4 bytes
+- 6 bytes
+- 8 bytes
+
+**Respuesta:** 6 bytes.
+
+**Por qué:** una MAC son 48 bits = 6 bytes (12 dígitos hexadecimales).
+
+**Pregunta 17.** ¿Cuántos bits tiene una dirección MAC?
+
+Opciones:
+
+- 24 bits
+- 32 bits
+- 48 bits
+
+**Respuesta:** 48 bits.
+
+**Por qué:** 6 bytes × 8 bits = 48 bits.
+
+**Pregunta 18.** ¿Qué es el OUI de una dirección MAC?
+
+Opciones:
+
+- El número de serie del dispositivo
+- El identificador del fabricante
+- El número de modelo del dispositivo
+
+**Respuesta:** El identificador del fabricante.
+
+**Por qué:** el OUI (*Organizationally Unique Identifier*), los primeros 3 bytes, lo asigna el IEEE a cada fabricante.
+
+**Pregunta 19.** ¿Qué es el NIC de una dirección MAC?
+
+Opciones:
+
+- El identificador del fabricante
+- El controlador de interfaz de red
+- El número de modelo del dispositivo
+
+**Respuesta:** El controlador de interfaz de red.
+
+**Por qué:** los últimos 3 bytes (NIC, *Network Interface Controller*) los asigna el fabricante para identificar la tarjeta concreta.
+
+**Pregunta 20.** ¿Qué parte de una dirección MAC identifica de manera única a un dispositivo?
+
+Opciones:
+
+- El primer byte
+- Los primeros tres bytes
+- Los seis bytes
+
+**Respuesta:** Los seis bytes.
+
+**Por qué:** solo la MAC completa (OUI + NIC = 6 bytes) identifica de forma única la interfaz; los 3 primeros bytes solo indican el fabricante.
+
+**Pregunta 21.** ¿Qué valores serían correctos para la dirección `192.168.1.45/29`? *(Selección múltiple.)*
+
+Opciones:
+
+- Máscara de red `255.255.255.248`
+- Máscara de red `255.255.255.212`
+- La primera IP sería la dirección `192.168.1.45`
+- La primera IP sería la dirección `192.168.1.40`
+- La primera IP sería la dirección `192.168.1.44`
+- La última IP sería la dirección `192.168.1.48`
+- La última IP sería la dirección `192.168.1.47`
+- La última IP sería la dirección `192.168.1.46`
+
+**Respuesta:** Máscara `255.255.255.248`; la primera IP sería `192.168.1.40`; la última IP sería `192.168.1.47`.
+
+**Por qué:** `/29` deja 3 bits de host → bloques de 8 direcciones. La `.45` cae en el bloque `40–47`: Network ID = `192.168.1.40` (primera) y Broadcast = `192.168.1.47` (última). El rango utilizable sería `.41`–`.46`.
+
+**Pregunta 22.** Completa los valores para la dirección `10.10.0.12/15`. *(Pregunta de rellenar.)*
+
+**Respuesta:**
+
+- Máscara de red: `255.254.0.0`
+- Network ID: `10.10.0.0`
+- Hosts utilizables: `131070`
+- Broadcast: `10.11.255.255`
+- Clase: `A`
+
+**Por qué:** `/15` = `11111111.11111110.00000000.00000000` = `255.254.0.0`, con 17 bits de host → 2¹⁷ − 2 = 131070. El rango es `10.10.0.0`–`10.11.255.255`. Como el primer octeto es 10 (rango 1–126), es de Clase A.
+
+**Pregunta 23.** Relaciona cada CIDR con su máscara de red. CIDR a relacionar: `/21`, `/26`, `/17`, `/12`, `/1`.
+
+| CIDR | Máscara de red |
+|------|----------------|
+| `/21` | `255.255.248.0` |
+| `/26` | `255.255.255.192` |
+| `/17` | `255.255.128.0` |
+| `/12` | `255.240.0.0` |
+| `/1` | `128.0.0.0` |
+
+**Por qué:** se ponen a `1` los primeros N bits y se convierte cada octeto a decimal (p. ej. `/21` = `11111111.11111111.11111000.00000000`).
+
+**Pregunta 24.** Indica el número de hosts totales utilizables para cada máscara de red. Máscaras a relacionar: `255.255.255.128`, `255.255.254.0`, `255.255.128.0`, `255.224.0.0`, `255.128.0.0`, `0.0.0.0`.
+
+| Máscara de red | CIDR | Hosts utilizables (2ⁿ − 2) |
+|----------------|------|----------------------------|
+| `255.255.255.128` | `/25` | 126 |
+| `255.255.254.0` | `/23` | 510 |
+| `255.255.128.0` | `/17` | 32 766 |
+| `255.224.0.0` | `/11` | 2 097 150 |
+| `255.128.0.0` | `/9` | 8 388 606 |
+| `0.0.0.0` | `/0` | 4 294 967 294 |
+
+**Por qué:** `n` es el número de bits de host (32 − prefijo); los hosts utilizables son 2ⁿ − 2 (descontando Network ID y Broadcast).
