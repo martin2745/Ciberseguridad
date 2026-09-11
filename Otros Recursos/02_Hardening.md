@@ -1,4 +1,4 @@
-# 03 Hardening en Linux
+# 02 Hardening en Linux
 
 ## Índice
 
