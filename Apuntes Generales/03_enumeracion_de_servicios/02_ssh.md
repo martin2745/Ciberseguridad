@@ -8,6 +8,9 @@
 4. [Conexión y verificación de acceso](#4-conexión-y-verificación-de-acceso)
 5. [Ataque de fuerza bruta con Hydra](#5-ataque-de-fuerza-bruta-con-hydra)
 6. [Enumeración con Nmap](#6-enumeración-con-nmap)
+7. [Autenticación por clave pública](#7-autenticación-por-clave-pública)
+8. [Transferencia de ficheros: scp y sftp](#8-transferencia-de-ficheros-scp-y-sftp)
+9. [Gestión de known_hosts](#9-gestión-de-known_hosts)
 
 ---
 
@@ -179,3 +182,133 @@ Nmap done: 1 IP address (1 host up) scanned in 0.70 seconds
 > **Nota:** La línea `22/tcp open ssh OpenSSH 10.2p1 Debian 5 (protocol 2.0)` es la que permite aplicar el *banner grabbing* explicado en la sección 2: revela la versión de OpenSSH, la distribución (`Debian`) y confirma el uso del protocolo SSH 2.0. El campo `Service Info: OS: Linux` y el `CPE` (*Common Platform Enumeration*) son identificadores estandarizados que ayudan a correlacionar el servicio con vulnerabilidades conocidas.
 
 > **Recuerda:** Para escanear el contenedor de esta práctica en concreto (que expone SSH en el `2222`, no en el `22`), habría que ajustar el puerto: `nmap -sSCV -p2222 localhost`.
+
+Nmap dispone de scripts NSE específicos para SSH muy útiles en la enumeración:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ nmap -p2222 --script ssh2-enum-algos,ssh-auth-methods,ssh-hostkey localhost
+```
+
+| Script | Descripción |
+|--------|-------------|
+| `ssh2-enum-algos` | Enumera los algoritmos de cifrado, MAC y intercambio de claves admitidos. Detectar algoritmos débiles/obsoletos es un hallazgo. |
+| `ssh-auth-methods` | Muestra los **métodos de autenticación** permitidos (contraseña, clave pública, etc.). Confirma si la fuerza bruta por contraseña es viable. |
+| `ssh-hostkey` | Muestra las claves de host del servidor (su *fingerprint*). |
+
+> **Nota:** `ssh-auth-methods` es especialmente útil antes de lanzar Hydra: si el servidor **no** admite `password` como método (solo `publickey`), un ataque de fuerza bruta de contraseñas está condenado al fracaso y ahorramos tiempo.
+
+---
+
+## 7. Autenticación por clave pública
+
+Además de la contraseña, SSH admite (y recomienda) la **autenticación por clave pública**, más segura porque no viaja ningún secreto por la red. Funciona con un par de claves: una **privada** (que guardas en secreto) y una **pública** (que se copia al servidor).
+
+Generamos un par de claves:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ssh-keygen -t ed25519 -f ~/.ssh/id_martin
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-t ed25519` | Tipo de algoritmo de clave. `ed25519` es moderno, rápido y seguro (alternativa a `rsa`). |
+| `-f ~/.ssh/id_martin` | Ruta y nombre del fichero de la clave. Genera `id_martin` (privada) e `id_martin.pub` (pública). |
+
+Copiamos la clave pública al servidor (requiere poder autenticarnos una vez):
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ssh-copy-id -i ~/.ssh/id_martin.pub -p 2222 martin@localhost
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-i ~/.ssh/id_martin.pub` | Clave **pública** a instalar en el servidor. |
+| `-p 2222` | Puerto del servicio SSH. |
+| `martin@localhost` | Usuario y host destino. |
+
+A partir de aquí, nos conectamos usando la clave privada, sin escribir contraseña:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ssh -i ~/.ssh/id_martin -p 2222 martin@localhost
+```
+
+> **Importante:** En una auditoría, encontrar una **clave privada** (`id_rsa`, `id_ed25519`) en un servidor comprometido es un hallazgo muy valioso: permite acceder a otros sistemas donde esa clave esté autorizada, sin necesidad de contraseñas. Por eso los ficheros del directorio `~/.ssh/` son un objetivo típico tras un acceso inicial.
+
+> **Nota:** La clave pública instalada se guarda en el fichero `~/.ssh/authorized_keys` del usuario en el servidor. Añadir una clave propia a ese fichero (si tienes acceso de escritura) es una técnica común de **persistencia**: garantiza que podrás volver a entrar aunque cambien la contraseña.
+
+---
+
+## 8. Transferencia de ficheros: scp y sftp
+
+Sobre el mismo canal cifrado de SSH podemos transferir ficheros, algo esencial para descargar botín (*loot*) o subir herramientas al objetivo. Hay dos utilidades principales:
+
+**scp** (*secure copy*) — copia ficheros de forma parecida a `cp`, pero por red:
+
+```bash
+# Descargar un fichero del servidor a nuestra máquina
+┌──(kali㉿kali)-[~]
+└─$ scp -P 2222 martin@localhost:/etc/passwd ./passwd_remoto
+```
+
+```bash
+# Subir un fichero de nuestra máquina al servidor
+┌──(kali㉿kali)-[~]
+└─$ scp -P 2222 ./exploit.sh martin@localhost:/tmp/
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-P 2222` | Puerto del servidor. **Ojo:** en `scp` es `-P` **mayúscula** (en `ssh` es `-p` minúscula). |
+| `martin@localhost:/etc/passwd` | Origen remoto: `usuario@host:ruta`. |
+| `./passwd_remoto` | Destino local. |
+
+**sftp** (*SSH File Transfer Protocol*) — sesión interactiva parecida a un cliente FTP, pero cifrada:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ sftp -P 2222 martin@localhost
+sftp> ls
+sftp> get config.php
+sftp> put shell.sh
+sftp> bye
+```
+
+| Comando | Descripción |
+|---------|-------------|
+| `ls` / `cd` | Navegar por el sistema de ficheros remoto. |
+| `get fichero` | Descargar un fichero. |
+| `put fichero` | Subir un fichero. |
+| `bye` | Cerrar la sesión. |
+
+> **Nota:** `sftp` es la alternativa **segura** al FTP clásico que vimos en el capítulo anterior: hace lo mismo (`get`/`put`) pero todo el tráfico, incluidas las credenciales, va cifrado por SSH. Cuando en una auditoría solo esté disponible FTP en claro, recomendarlo es la contramedida directa.
+
+---
+
+## 9. Gestión de known_hosts
+
+Como vimos en la sección 4, la primera conexión guarda la huella del servidor en `~/.ssh/known_hosts`. Si el servidor se reinstala o cambia sus claves (habitual al recrear un contenedor de laboratorio), la huella dejará de coincidir y SSH bloqueará la conexión con un aviso llamativo:
+
+```bash
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
+
+Para eliminar la huella antigua de ese host y poder reconectar:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ssh-keygen -R "[localhost]:2222"
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-R "[localhost]:2222"` | Elimina (*remove*) de `known_hosts` la entrada del host indicado. Para puertos no estándar se usa el formato `[host]:puerto`. |
+
+> **Advertencia:** En un laboratorio, este aviso es normal (has recreado el contenedor). Pero en un entorno real, un cambio de clave de host **inesperado** puede indicar un ataque *man-in-the-middle*: no borres la huella sin confirmar antes con el administrador que el cambio es legítimo.
+
+> **Recuerda:** Todas estas prácticas se realizan sobre el laboratorio desplegado en tu propia máquina. Acceder a sistemas de terceros sin autorización explícita es ilegal.

@@ -7,7 +7,11 @@
 3. [Inspección del certificado SSL/TLS con OpenSSL](#3-inspección-del-certificado-ssltls-con-openssl)
 4. [Análisis de la configuración SSL/TLS: sslyze y sslscan](#4-análisis-de-la-configuración-ssltls-sslyze-y-sslscan)
 5. [Enumeración con Nmap](#5-enumeración-con-nmap)
-6. [Caso práctico: la vulnerabilidad Heartbleed (CVE-2014-0160)](#6-caso-práctico-la-vulnerabilidad-heartbleed-cve-2014-0160)
+6. [Descubrimiento de directorios y ficheros](#6-descubrimiento-de-directorios-y-ficheros)
+   - [gobuster](#gobuster)
+   - [ffuf](#ffuf)
+   - [Nikto](#nikto)
+7. [Caso práctico: la vulnerabilidad Heartbleed (CVE-2014-0160)](#7-caso-práctico-la-vulnerabilidad-heartbleed-cve-2014-0160)
    - [Despliegue del laboratorio vulnerable](#despliegue-del-laboratorio-vulnerable)
    - [Detección de Heartbleed](#detección-de-heartbleed)
 
@@ -191,7 +195,90 @@ Otra herramienta muy usada para enumerar tecnologías web es `whatweb`:
 
 ---
 
-## 6. Caso práctico: la vulnerabilidad Heartbleed (CVE-2014-0160)
+## 6. Descubrimiento de directorios y ficheros
+
+Los servidores web casi nunca enlazan todo su contenido desde la portada. Rutas de administración, ficheros de copia de seguridad, paneles ocultos o directorios olvidados suelen existir sin estar enlazados. El **descubrimiento de contenido** (*content discovery* o *directory brute forcing*) consiste en probar una lista de nombres habituales contra el servidor y quedarse con los que responden.
+
+> **Nota:** La técnica se basa en el **código de respuesta HTTP**: `200` (existe), `301`/`302` (redirección, suele existir), `403` (prohibido, pero *existe*) y `404` (no existe). Encontrar un `403` es interesante: el recurso está ahí, solo que protegido.
+
+### gobuster
+
+`gobuster` prueba nombres de un diccionario contra el servidor y reporta los que existen:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ gobuster dir -u http://localhost -w /usr/share/wordlists/dirb/common.txt
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `dir` | Modo de descubrimiento de **directorios y ficheros**. |
+| `-u http://localhost` | URL objetivo. |
+| `-w /usr/share/wordlists/dirb/common.txt` | Diccionario de nombres a probar (*wordlist*). |
+| `-x php,txt,bak` | (Opcional) Extensiones a añadir a cada palabra (busca `admin.php`, `admin.txt`…). |
+
+**Ejemplo de salida (fragmento representativo):**
+
+```bash
+===============================================================
+Gobuster v3.6
+===============================================================
+/.htaccess            (Status: 403) [Size: 278]
+/admin                (Status: 301) [Size: 313] [--> http://localhost/admin/]
+/index.php            (Status: 200) [Size: 10701]
+/robots.txt           (Status: 200) [Size: 45]
+/backup               (Status: 301) [Size: 314] [--> http://localhost/backup/]
+===============================================================
+```
+
+> **Importante:** Rutas como `/admin` (panel), `/backup` (posibles copias con datos sensibles) o `/robots.txt` (que a menudo lista rutas que el administrador quiere ocultar de los buscadores) son puntos de partida excelentes. `robots.txt` es, irónicamente, una fuente de rutas interesantes para el atacante.
+
+### ffuf
+
+`ffuf` (*Fuzz Faster U Fool*) es una alternativa muy rápida basada en la palabra `FUZZ`, que marca dónde se prueba cada término del diccionario:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ffuf -u http://localhost/FUZZ -w /usr/share/wordlists/dirb/common.txt
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-u http://localhost/FUZZ` | URL con la palabra clave `FUZZ` en el punto a fuzzear. |
+| `-w ...` | Diccionario. |
+| `-mc 200,301,403` | (Opcional) *Match codes*: mostrar solo estos códigos de respuesta. |
+| `-fc 404` | (Opcional) *Filter codes*: ocultar estos códigos. |
+
+> **Nota:** La gran ventaja de `ffuf` es que la palabra `FUZZ` puede ir en **cualquier parte** de la petición: en la ruta, en un parámetro (`?id=FUZZ`), en una cabecera o incluso en el nombre de un subdominio. Es una navaja suiza del *fuzzing* web.
+
+### Nikto
+
+`nikto` es un escáner de vulnerabilidades web que, además de descubrir ficheros, comprueba configuraciones inseguras y vulnerabilidades conocidas:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ nikto -h http://localhost
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-h http://localhost` | *Host* objetivo a analizar. |
+
+**Ejemplo de salida (fragmento representativo):**
+
+```bash
++ Server: Apache/2.4.29 (Ubuntu)
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-Content-Type-Options header is not set.
++ /admin/: This might be interesting...
++ OSVDB-3233: /icons/README: Apache default file found.
+```
+
+> **Advertencia:** Nikto es **ruidoso** (genera muchísimas peticiones y queda registrado en los logs del servidor). Es perfecto para un laboratorio o una auditoría autorizada, pero no es sigiloso. Sus hallazgos típicos son cabeceras de seguridad ausentes (`X-Frame-Options`, `X-Content-Type-Options`), ficheros por defecto y rutas interesantes.
+
+---
+
+## 7. Caso práctico: la vulnerabilidad Heartbleed (CVE-2014-0160)
 
 **Heartbleed** es una vulnerabilidad de seguridad que afecta a la biblioteca OpenSSL y permite a los atacantes acceder a la memoria de un servidor vulnerable. Si un servidor web es vulnerable a Heartbleed y lo detectamos a través de estas herramientas, significa que un atacante podría potencialmente acceder a información confidencial, como claves privadas, nombres de usuario y contraseñas, etc.
 

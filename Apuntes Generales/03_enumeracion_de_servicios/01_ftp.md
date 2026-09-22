@@ -12,8 +12,10 @@
    - [Errores frecuentes al lanzar Hydra](#errores-frecuentes-al-lanzar-hydra)
    - [Ataque con éxito](#ataque-con-éxito)
 7. [Acceso y verificación](#7-acceso-y-verificación)
-8. [Escenario con usuario anónimo](#8-escenario-con-usuario-anónimo)
+8. [Transferencia de ficheros](#8-transferencia-de-ficheros)
+9. [Escenario con usuario anónimo](#9-escenario-con-usuario-anónimo)
    - [El problema del modo pasivo tras NAT](#el-problema-del-modo-pasivo-tras-nat)
+10. [Captura de credenciales en texto plano](#10-captura-de-credenciales-en-texto-plano)
 
 ---
 
@@ -285,7 +287,50 @@ Remote directory: /
 
 ---
 
-## 8. Escenario con usuario anónimo
+## 8. Transferencia de ficheros
+
+Una vez dentro de la sesión FTP, el objetivo real de una auditoría suele ser **descargar** ficheros interesantes del servidor (configuraciones, copias de seguridad, credenciales) o **subir** un fichero (por ejemplo, un webshell si el FTP sirve el mismo directorio que un servidor web). Estos son los comandos principales dentro del prompt `ftp>`:
+
+```bash
+ftp> ls
+ftp> cd backups
+ftp> get config.php
+ftp> put shell.php
+ftp> mget *.txt
+ftp> bye
+```
+
+| Comando | Descripción |
+|---------|-------------|
+| `ls` | Lista el contenido del directorio remoto actual. |
+| `cd backups` | Cambia al directorio remoto indicado. |
+| `get config.php` | **Descarga** un fichero del servidor a tu máquina local. |
+| `put shell.php` | **Sube** un fichero desde tu máquina al servidor (requiere permiso de escritura). |
+| `mget *.txt` | Descarga **varios** ficheros de golpe (*multiple get*), admite comodines. |
+| `mput *.txt` | Sube varios ficheros de golpe (*multiple put*). |
+| `bye` (o `exit`) | Cierra la sesión FTP. |
+
+> **Nota:** Con `mget`/`mput`, FTP pregunta por cada fichero por defecto. Para desactivar esa confirmación y transferir todo sin preguntar, ejecuta antes el comando `prompt` (alterna el modo interactivo).
+
+> **Importante:** Si el directorio del FTP coincide con la raíz de un servidor web (algo habitual en configuraciones mal hechas), poder **subir** un fichero `.php` con `put` permite pasar de un simple acceso FTP a **ejecución de código** en el servidor: se sube un webshell y se accede a él desde el navegador. Es uno de los saltos más comunes de FTP a RCE.
+
+Alternativamente, para descargar un árbol completo sin entrar en la sesión interactiva, `wget` admite el protocolo FTP con credenciales:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ wget -r ftp://martin:'abc123.'@127.0.0.1/
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-r` | Descarga de forma **recursiva** todo el árbol de directorios. |
+| `ftp://martin:'abc123.'@127.0.0.1/` | URL con usuario y contraseña embebidos para la descarga automática. |
+
+> **Advertencia:** Incluir la contraseña en la línea de comandos la deja registrada en el historial del shell y visible en la lista de procesos. Úsalo solo en laboratorio; en un entorno real, prefiere la sesión interactiva o un fichero `.netrc` con permisos restringidos.
+
+---
+
+## 9. Escenario con usuario anónimo
 
 En este segundo escenario desplegamos un servidor que **permite el acceso anónimo**, usando el proyecto `metabrainz/docker-anon-ftp`:
 
@@ -406,3 +451,38 @@ Remote directory: /
 | `pwd` | Muestra el directorio remoto actual (`/`). |
 
 > **Nota:** El banner `220 Welcome to an awesome public FTP Server` es distinto del primer escenario (`220 FTP Server`), lo que confirma que estamos hablando con el contenedor de FTP anónimo. Aunque el login sea posible, recuerda que el listado de ficheros (`ls`) fallará por el mismo motivo del modo pasivo (`PASV IP ...`) hasta que el servidor anuncie una IP coherente.
+
+---
+
+## 10. Captura de credenciales en texto plano
+
+El FTP clásico transmite el usuario y la contraseña **sin cifrar**. Esto significa que cualquiera que pueda capturar el tráfico de la red (un atacante en la misma red local, un equipo comprometido en medio, etc.) puede leer las credenciales directamente. Es una de las principales razones por las que el FTP se considera un protocolo inseguro.
+
+Para demostrarlo en el laboratorio, podemos capturar el tráfico con `tcpdump` mientras iniciamos sesión:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ sudo tcpdump -i lo -A 'tcp port 21'
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-i lo` | Interfaz a escuchar. `lo` es la interfaz *loopback* (para tráfico a `localhost`); en una red real sería `eth0`, `wlan0`, etc. |
+| `-A` | Muestra el contenido de los paquetes en formato **ASCII** (texto legible). |
+| `'tcp port 21'` | Filtro: captura solo el tráfico del puerto 21 (canal de control de FTP). |
+
+Mientras la captura está activa, iniciamos una sesión FTP en otra terminal. En la salida de `tcpdump` veremos aparecer, en claro, los comandos `USER` y `PASS`:
+
+```bash
+...
+USER martin
+...
+PASS abc123.
+...
+```
+
+> **Advertencia:** Ahí está el problema de seguridad: el usuario `martin` y la contraseña `abc123.` viajan **legibles** por la red. Cualquier *sniffer* (tcpdump, Wireshark) los captura sin esfuerzo.
+
+> **Importante — la solución:** usar alternativas cifradas. **FTPS** (FTP sobre TLS) o, mejor aún, **SFTP** (transferencia de ficheros sobre SSH), que cifran toda la comunicación, incluidas las credenciales. Si un servicio solo ofrece FTP plano, es un hallazgo que reportar.
+
+> **Recuerda:** Estas prácticas se realizan sobre el laboratorio desplegado en tu propia máquina. Capturar tráfico de redes ajenas sin autorización es ilegal.

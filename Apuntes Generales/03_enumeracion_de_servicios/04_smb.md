@@ -10,6 +10,7 @@
 6. [Interacción con smbclient](#6-interacción-con-smbclient)
 7. [Montaje de recursos compartidos con CIFS](#7-montaje-de-recursos-compartidos-con-cifs)
 8. [Enumeración con CrackMapExec](#8-enumeración-con-crackmapexec)
+9. [Enumeración completa con enum4linux-ng y rpcclient](#9-enumeración-completa-con-enum4linux-ng-y-rpcclient)
 
 ---
 
@@ -318,5 +319,87 @@ Se comparte el enlace directo a la Wiki para instalar la herramienta:
 > **Nota:** Cuando se pasan **archivos** a `-u` y `-p`, CME prueba todas las combinaciones usuario/contraseña, funcionando como herramienta de fuerza bruta (similar a Hydra, pero orientada a entornos Windows/AD).
 
 > **Importante:** CrackMapExec ya no recibe mantenimiento activo; su sucesor es **NetExec** (`nxc`), que mantiene una sintaxis prácticamente idéntica (`nxc smb 127.0.0.1 -u ... -p ... --shares`). Si CME no está disponible en tu Kali, usa `nxc` en su lugar.
+
+> **Recuerda:** Todas estas prácticas se realizan sobre el laboratorio desplegado en tu propia máquina. Enumerar o atacar servidores de terceros sin autorización explícita es ilegal.
+
+---
+
+## 9. Enumeración completa con enum4linux-ng y rpcclient
+
+Las herramientas anteriores se centran en los recursos compartidos. Para una enumeración **integral** de un servicio SMB/Samba (usuarios, grupos, política de contraseñas, información del sistema, recursos…) las dos herramientas clásicas son `enum4linux-ng` y `rpcclient`.
+
+**enum4linux-ng** es una reescritura moderna de `enum4linux` que automatiza casi toda la enumeración en un solo comando:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ enum4linux-ng -A 127.0.0.1
+```
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `-A` | Modo **agresivo**: ejecuta todas las comprobaciones (usuarios, grupos, recursos, política de contraseñas, información del SO). |
+| `127.0.0.1` | Objetivo. |
+| `-u` / `-p` | (Opcional) Usuario y contraseña, si se dispone de credenciales. Sin ellos, intenta una sesión nula. |
+
+**Ejemplo de salida (fragmento representativo):**
+
+```bash
+ ==========================
+|    Target Information    |
+ ==========================
+[*] Target ........... 127.0.0.1
+[*] Username ......... ''
+[*] Password ......... ''
+
+ ===================================
+|    OS Information via RPC         |
+ ===================================
+[+] Server OS: Windows 6.1 (Samba 4.x)
+
+ ==================================
+|    Users via RPC on 127.0.0.1    |
+ ==================================
+[+] Found user 'martin' (RID: 1000)
+
+ ===================================
+|    Shares via RPC on 127.0.0.1    |
+ ===================================
+[+] Share 'data' - READ, WRITE
+```
+
+| Sección | Qué aporta |
+|---------|-----------|
+| `Target Information` | Datos de la conexión (usuario/contraseña usados, aquí una sesión nula). |
+| `OS Information` | Sistema operativo y versión de Samba. |
+| `Users via RPC` | Lista de usuarios y sus RID (identificadores). |
+| `Shares via RPC` | Recursos compartidos y permisos. |
+
+> **Importante:** Poder enumerar la lista de **usuarios** sin credenciales (mediante sesión nula) es un hallazgo relevante: proporciona directamente los nombres de login para un posterior ataque de fuerza bruta (con Hydra o CrackMapExec).
+
+**rpcclient** permite consultas manuales y dirigidas al servicio RPC del servidor SMB, útil cuando queremos preguntar algo concreto:
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ rpcclient -U "" -N 127.0.0.1
+```
+
+Una vez dentro del prompt `rpcclient $>`, se lanzan consultas:
+
+```bash
+rpcclient $> enumdomusers
+rpcclient $> querydominfo
+rpcclient $> netshareenum
+rpcclient $> exit
+```
+
+| Parámetro / comando | Descripción |
+|---------------------|-------------|
+| `-U ""` | Usuario vacío (para intentar una sesión nula). |
+| `-N` | No solicita contraseña. |
+| `enumdomusers` | Enumera los usuarios del dominio. |
+| `querydominfo` | Muestra información del dominio (política de contraseñas, número de usuarios). |
+| `netshareenum` | Enumera los recursos compartidos. |
+
+> **Nota:** `enum4linux-ng` en realidad usa por debajo herramientas como `rpcclient`, `smbclient` y `nmblookup`. Conocer `rpcclient` por separado es útil cuando la enumeración automática falla o cuando se quiere realizar una consulta muy concreta sin el ruido del modo agresivo.
 
 > **Recuerda:** Todas estas prácticas se realizan sobre el laboratorio desplegado en tu propia máquina. Enumerar o atacar servidores de terceros sin autorización explícita es ilegal.

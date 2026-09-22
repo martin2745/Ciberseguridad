@@ -24,6 +24,17 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 - [01 - Reconocimiento de servicios y acceso](./Apuntes%20Generales/01_Reconocimiento_de_servicios_y_acceso.md)
 - [02 - Configuración de laboratorios con Docker](./Apuntes%20Generales/02_configuracion_laboratorios_con_docker.md)
 
+#### Enumeración de servicios
+
+- [01 - FTP](./Apuntes%20Generales/03_enumeracion_de_servicios/01_ftp.md)
+- [02 - SSH](./Apuntes%20Generales/03_enumeracion_de_servicios/02_ssh.md)
+- [03 - HTTP / HTTPS](./Apuntes%20Generales/03_enumeracion_de_servicios/03_http.md)
+- [04 - SMB / Samba](./Apuntes%20Generales/03_enumeracion_de_servicios/04_smb.md)
+- [05 - CMS WordPress](./Apuntes%20Generales/03_enumeracion_de_servicios/05_cms_wordpress.md)
+- [06 - CMS Joomla](./Apuntes%20Generales/03_enumeracion_de_servicios/06_cms_joomla.md)
+- [07 - CMS Drupal](./Apuntes%20Generales/03_enumeracion_de_servicios/07_cms_drupal.md)
+- [08 - CMS Magento](./Apuntes%20Generales/03_enumeracion_de_servicios/08_cms_magento.md)
+
 ### Otros recursos
 
 - [01 - IDS Snort](./Otros%20Recursos/01_IDS_snort.md)
@@ -56,3 +67,4 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 #### Vulhub
 
 - [Kibana - CVE-2018-17246](./Máquinas%20comprometidas/Vulhub/kibana/CVE-2018-17246/writeup.md)
+- [ImageMagick - CVE-2016-3714 (ImageTragick)](./Máquinas%20comprometidas/Vulhub/imagemagick/CVE-2016-3714/writeup.md)
