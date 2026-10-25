@@ -61,6 +61,10 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 
 ### Máquinas comprometidas
 
+#### Metasploitable2
+
+- [00 - Instalación de Metasploitable 2](./Máquinas%20comprometidas/Metasploitable2/00_instalacion.md)
+
 #### HackMyVM
 
 - [01 - Pipy](./Máquinas%20comprometidas/HackMyVM/01_pipy.md)
