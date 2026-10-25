@@ -1,7 +1,5 @@
 # Instalación de Kali Linux
 
-> Apunte basado en la guía *"Kali Linux - guía rápida"* de Manuel González Regal.
-
 ## Índice
 
 1. [Introducción](#1-introducción)
