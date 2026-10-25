@@ -64,6 +64,35 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 #### Metasploitable2
 
 - [00 - Instalación de Metasploitable 2](./Máquinas%20comprometidas/Metasploitable2/00_instalacion.md)
+- [01 - Reconocimiento y Metasploit](./Máquinas%20comprometidas/Metasploitable2/01_reconocimiento_y_metasploit.md)
+- [02 - FTP (vsftpd 2.3.4)](./Máquinas%20comprometidas/Metasploitable2/02_ftp.md)
+- [03 - SSH (OpenSSH 4.7p1)](./Máquinas%20comprometidas/Metasploitable2/03_ssh.md)
+- [04 - Telnet](./Máquinas%20comprometidas/Metasploitable2/04_telnet.md)
+- [05 - SMTP (Postfix)](./Máquinas%20comprometidas/Metasploitable2/05_smtp.md)
+- [06 - DNS (BIND 9.4.2)](./Máquinas%20comprometidas/Metasploitable2/06_dns.md)
+- [07 - HTTP (Apache + apps web)](./Máquinas%20comprometidas/Metasploitable2/07_http.md)
+- [08 - rpcbind](./Máquinas%20comprometidas/Metasploitable2/08_rpcbind.md)
+- [09 - Samba (SMB 3.0.20)](./Máquinas%20comprometidas/Metasploitable2/09_samba.md)
+- [10 - Servicios r (exec/login/shell)](./Máquinas%20comprometidas/Metasploitable2/10_servicios_r.md)
+- [11 - Java RMI](./Máquinas%20comprometidas/Metasploitable2/11_java_rmi.md)
+- [12 - ingreslock (bindshell)](./Máquinas%20comprometidas/Metasploitable2/12_ingreslock.md)
+- [13 - NFS](./Máquinas%20comprometidas/Metasploitable2/13_nfs.md)
+- [14 - ProFTPD 1.3.1](./Máquinas%20comprometidas/Metasploitable2/14_proftpd.md)
+- [15 - MySQL 5.0.51a](./Máquinas%20comprometidas/Metasploitable2/15_mysql.md)
+- [16 - distccd](./Máquinas%20comprometidas/Metasploitable2/16_distccd.md)
+- [17 - PostgreSQL 8.3](./Máquinas%20comprometidas/Metasploitable2/17_postgresql.md)
+- [18 - VNC](./Máquinas%20comprometidas/Metasploitable2/18_vnc.md)
+- [19 - X11](./Máquinas%20comprometidas/Metasploitable2/19_x11.md)
+- [20 - UnrealIRCd](./Máquinas%20comprometidas/Metasploitable2/20_unrealircd.md)
+- [21 - Apache Tomcat / Coyote](./Máquinas%20comprometidas/Metasploitable2/21_tomcat.md)
+- [22 - DRb (Ruby distribuido)](./Máquinas%20comprometidas/Metasploitable2/22_drb.md)
+- [23 - Post-explotación](./Máquinas%20comprometidas/Metasploitable2/23_post_explotacion.md)
+- [24 - Resumen de contramedidas](./Máquinas%20comprometidas/Metasploitable2/24_contramedidas.md)
+
+##### Tareas
+
+- [01 - Enunciado: Fuerza bruta sobre SMB, FTP y SSH](./Máquinas%20comprometidas/Metasploitable2/tareas/01_enunciado_fuerza_bruta_smb_ftp_ssh.md)
+- [01 - Solución: Fuerza bruta sobre SMB, FTP y SSH](./Máquinas%20comprometidas/Metasploitable2/tareas/01_solucion_fuerza_bruta_smb_ftp_ssh.md)
 
 #### HackMyVM
 
