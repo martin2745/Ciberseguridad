@@ -1,7 +1,5 @@
 # Instalación de Kali Linux
 
-## Índice
-
 1. [Introducción](#1-introducción)
 2. [Descarga de la máquina virtual](#2-descarga-de-la-máquina-virtual)
 3. [Importación en VirtualBox](#3-importación-en-virtualbox)

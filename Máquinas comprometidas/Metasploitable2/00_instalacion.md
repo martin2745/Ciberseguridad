@@ -1,7 +1,5 @@
 # Instalación de Metasploitable 2
 
-> Apunte basado en la guía *"Descarga e instalación de Metasploitable 2 en VirtualBox"* del Curso de Hacking Ético de Juan Marcos Filgueira.
-
 ## Índice
 
 1. [Introducción](#1-introducción)
