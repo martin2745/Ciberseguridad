@@ -18,6 +18,10 @@ Este repositorio está diseñado como un espacio de aprendizaje y documentación
 
 ---
 
+### Kali Linux
+
+- [00 - Instalación de Kali Linux](./Kali%20Linux/00_instalacion.md)
+
 ### Apuntes generales de hacking ético y ciberseguridad
 
 - [00 - Conceptos básicos de redes](./Apuntes%20Generales/00_conceptos_basicos.md)
